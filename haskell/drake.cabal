@@ -1,0 +1,14 @@
+Version:                0.1
+name:                   drake
+Description:            Files for developing MUD project
+License:                BSD3
+Author:                 Aaron Brenzel
+Build-Type:             Simple
+Cabal-Version:          >= 1.2
+
+library
+    Build-Depends:      stm,parsec,base,containers,bytestring
+    Exposed-modules:
+        Game.GameObjects.NPC, Game.GameObjects.Player, 
+        Game.GameObjects.PlayerMap, Game.GameObjects.Room, 
+        Game.Parsers.Room

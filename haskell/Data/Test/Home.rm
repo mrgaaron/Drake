@@ -1,0 +1,11 @@
+Title:
+Test Room
+%
+Description:
+A room of death.
+You will die.
+%
+Exits:
+North-Test/NorthRoom
+West-Test/WestRoom
+%

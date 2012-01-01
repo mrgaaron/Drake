@@ -1,0 +1,6 @@
+haskell/dist/*
+*.exe
+*.hi
+*.o
+*.pyc
+*.wpr

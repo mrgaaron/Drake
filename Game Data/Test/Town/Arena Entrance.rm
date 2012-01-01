@@ -1,0 +1,14 @@
+Title:
+Entrance to the Arena
+==
+Description:
+Compared to the busy town square, the area around the arena is eerily quiet.  A
+few birds chirp every so often from the elm trees lining the imposing entrance 
+to the city arena.  The massive doors are flanked by the statues of the arena's
+two most infamous champions - Malacath and Molag, as if they stand in judgment
+over those who would dare enter to compete.
+==
+Exits:
+North-Test/Arena/Foyer
+West-Test/Town/Town Square
+==
