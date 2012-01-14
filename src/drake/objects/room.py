@@ -1,3 +1,5 @@
+import stackless
+
 class Exits(object):
     def __init__(self):
         self.routes = {
@@ -45,6 +47,10 @@ class Room(object):
         
     def broadcast(self, message, from_actor):
         to_remove = []
+        #all iterations over a hashed collection like sets and dictionaries
+        #need to be atomic
+        t = stackless.getcurrent()
+        atomic = t.set_atomic(True)
         for actor in self.actors:
             if hasattr(actor, 'alive') and not actor.alive:
                 to_remove.append(actor)
@@ -55,6 +61,7 @@ class Room(object):
         #strange concurrency issues from the server trying to do it
         for t in to_remove:
             self.actors.remove(t)
+        t.set_atomic(atomic)
     
     def parse(self):
         parts = self.room_string.split('==\n')
@@ -76,9 +83,20 @@ class Room(object):
                         self.exits[direction] = destination
                     except:
                         pass
+    
+    def query_target(self, target):
+        for actor in self.actors:
+            if actor.id == target or target in actor.short_description:
+                return actor
                     
     def remove_actor(self, actor):
-        self.actors.remove(actor)
+        t = stackless.getcurrent()
+        atomic = t.set_atomic(True)
+        try:
+            self.actors.remove(actor)
+        except KeyError:
+            pass
+        t.set_atomic(atomic)
                     
     def to_string(self, actor):
         other_actors = ', '.join([a.short_description for a in self.actors if 

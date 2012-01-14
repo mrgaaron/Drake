@@ -5,6 +5,7 @@ sys.path.append('C:\\Drake\\src')
 
 from drake.command.registry import CommandRegistry
 import actor
+from drake.mobiles.humans.basic import Human
 
 class Player(actor.Actor):
     def __init__(self, connection, room, dead_channel):
@@ -16,6 +17,8 @@ class Player(actor.Actor):
         self.last_contact = time.time()
         self.warned = False
         self.cleaned = False
+        self.avatar = Human(self)
+        self.is_ai = False
         
     def __repr__(self):
         return '<Player "%s">' % self.id
@@ -29,6 +32,7 @@ class Player(actor.Actor):
         self.id = self.connection.recv(1024)
         self.short_description = self.id
         self.action_description = self.id
+        self.long_description = '%s is a game player.' % self.id
         self.room.add_actor(self)
         stackless.tasklet(self.read_command)()
         self.send_message(None, self.room.to_string(self))
@@ -38,7 +42,7 @@ class Player(actor.Actor):
     
     def send_message(self, from_actor, message):
         try:
-            self.connection.send(message)
+            self.connection.send(message + '\n')
         except Exception, e:
             print '%s: %s' % (self.id, e)
             self.close_connection()

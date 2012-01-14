@@ -54,9 +54,9 @@ class Actor(object):
                 'You must wait %d seconds before acting again.' % to_report)
             stackless.schedule()
         else:
-            stackless.tasklet(self._execute)(command)
+            self._execute(command)
             self.round_time = 0
-  
+    
     def respond(self, from_actor, msg):
         pass
     
@@ -64,5 +64,8 @@ class Actor(object):
         self.last_message = msg
         stackless.tasklet(self.respond)(from_actor, msg)
     
-    def set_room(self, room):
-        self.room = room
+    def set_room(self, room_id):
+        new_room = self.room.world.query_room(room_id)
+        self.room.remove_actor(self)
+        self.room = new_room
+        self.room.add_actor(self)

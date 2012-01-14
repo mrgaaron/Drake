@@ -8,4 +8,13 @@ class LookCommand(Command):
     
     def __call__(self, commands, actor):
         current_room = actor.room
-        actor.send_message(actor, current_room.to_string(actor))
+        if len(commands) == 1:
+            actor.send_message(actor, current_room.to_string(actor))
+        else:
+            target = ' '.join(commands[1:])
+            obj = actor.room.query_target(target)
+            if obj:
+                actor.send_message(actor, obj.long_description)
+                obj.send_message(actor, '%s is looking at you' % actor.action_description)
+            else:
+                actor.send_message(actor, 'There is no %s here.' % target)

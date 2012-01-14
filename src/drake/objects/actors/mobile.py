@@ -15,6 +15,11 @@ class Mobile(actor.Actor):
     def __init__(self, actor_id, room):
         super(Mobile, self).__init__(actor_id, room)
         room.add_actor(self)
+        self.is_ai = True
+        self.attackers = []
+        
+    def turn_aggressive(self):
+        raise NotImplementedError
     
     def respond(self, from_actor, msg):
         if not from_actor == self:
