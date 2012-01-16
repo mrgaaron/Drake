@@ -1,0 +1,2 @@
+This project encompasses some MUD client code that is being written using
+Stackless Python with an eye towards an eventual Haskell implementation.
