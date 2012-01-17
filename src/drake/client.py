@@ -7,9 +7,6 @@ import socket
 
 import threading
 
-from colorama import init, Fore
-init()
-
 channel = stackless.channel()
 
 OUTPUT_SCREEN_HEIGHT = 22
