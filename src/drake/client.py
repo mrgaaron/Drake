@@ -1,30 +1,83 @@
 import stackless
-import sys, signal
+import sys, signal, curses, traceback
+import curses.textpad
 from server import ssocket
 ssocket.install()
 import socket
 
 import threading
 
+from colorama import init, Fore
+init()
+
 channel = stackless.channel()
 
+OUTPUT_SCREEN_HEIGHT = 22
+
 class UserInput(threading.Thread):
+    def __init__(self, screen):
+        self.screen = screen
+        threading.Thread.__init__(self)
+        
     def run(self):
         while True:
             try:
-                command = raw_input()
-            except:
+                command = self.screen.input_textpad.edit()
+                self.screen.input_window.clear()
+                self.screen.input_window.refresh()
+            except Exception, e:
+                print e
                 raise ValueError
             channel.send(command)
+            
+class Screen(object):
+    def __init__(self):
+        self.screen = curses.initscr()
+        curses.start_color()
+        self.output_window = curses.newwin(OUTPUT_SCREEN_HEIGHT, 80, 0, 0)
+        for i in xrange(1, curses.COLORS):
+            curses.init_pair(i, i, curses.COLOR_BLACK)
+        self.output_window.scrollok(1)
+        self.output_window.idlok(1)
+        self.input_window = curses.newwin(1, 80, 24, 0)
+        self.input_textpad = curses.textpad.Textbox(self.input_window)
+        curses.noecho()
+        curses.cbreak()
+        self.screen.keypad(1)
+        self.screen.hline(23, 0, curses.ACS_HLINE, 80)
+        self.screen.refresh()
+    
+    def put_server_message(self, msg):
+        lines = msg.split('\n')
+        for line in lines:
+            if line.startswith('['):
+                self.output_window.addstr(line, curses.color_pair(12))
+            elif line.startswith('Exits'):
+                self.output_window.addstr(line, curses.color_pair(11))
+            elif line.startswith('Also here'):
+                self.output_window.addstr(line, curses.color_pair(14))
+            else:
+                self.output_window.addstr(line)
+            self.output_window.addstr('\n')
+        self.output_window.refresh()
 
 class Client(object):
     def __init__(self, host, port):
         self.host = host
         self.port = port
-        self.user_input = UserInput()
+        self.screen = Screen()
+        self.user_input = UserInput(self.screen)
         self.user_input.setDaemon = True
         
         stackless.tasklet(self.run)()
+    
+    def handle_exception(self, exception):
+        self.screen.screen.keypad(0)
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
+        self.socket.close()
+        sys.exit(0)
     
     def run(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -42,21 +95,17 @@ class Client(object):
                 self.socket.send(command)
                 if command == 'logout':
                     self.socket.close()
-            except:
-                self.socket.close()
-                print 'Connection lost... exiting.'
-                sys.exit(0)
+            except Exception, e:
+                self.handle_exception(e)
             stackless.schedule()
         
     def receive_messages(self):
         while True:
             try:
                 message = self.socket.recv(1024)
-                print message
-            except:
-                self.socket.close()
-                print 'Connection lost... exiting.'
-                sys.exit(0)
+                self.screen.put_server_message(message)
+            except Exception, e:
+                self.handle_exception(e)
             stackless.schedule()
     
 c = Client('127.0.0.1', 5555)

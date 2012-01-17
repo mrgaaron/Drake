@@ -59,8 +59,8 @@ class Room(object):
                 actor.send_message(from_actor, message)
         #handle removal from the room within the room itself, this prevents
         #strange concurrency issues from the server trying to do it
-        for t in to_remove:
-            self.actors.remove(t)
+        for remove in to_remove:
+            self.actors.remove(remove)
         t.set_atomic(atomic)
     
     def parse(self):
