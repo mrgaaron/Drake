@@ -1,0 +1,15 @@
+Title:
+Sephix - North Market Square
+==
+Description:
+The north end of the market essentially narrows into a boulevard, with somewhat
+scraggly pine trees providing shade in the middle of the cobblestone road.  On
+the west side of the road lies the A'sular Provincial Bank, which does brisk
+business from those needing access to their coin for trading in the markets.
+Several Sephix city guards stand idly outside the bank, warily watching the
+passersby for signs of trouble.
+==
+Exits:
+South-Sephix/Outside/Market/Central Square
+bank-Sephix/Inside/Bank/Entryway
+==

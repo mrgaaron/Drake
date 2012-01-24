@@ -1,0 +1,15 @@
+Title:
+Blacksmith Entrance
+==
+Description:
+The air in the smithery is redolent with the smell of sweat.  The rhythmic
+clinking of iron against iron can be heard from the forge room to the west.
+As apprentices work the bellows, you can feel an occasional blast of heat as
+the forge fires roar to life.  Every so often, a muscular apprentice can be
+seen carting off buckets of horseshoes, weaponry, and armor to the stockrooms
+behind the counter in front of you.
+==
+Exits:
+Out-Sephix/Outside/Market/Northwest Square
+West-Sephix/Inside/Blacksmith/Forge
+==

@@ -7,16 +7,26 @@ class Exits(object):
                 'south': None,
                 'east': None,
                 'west': None,
+                'northwest': None,
+                'southeast': None,
+                'southwest': None,
+                'northeast': None,
                 'up': None,
-                'down': None             
+                'down': None,
+                'in': None,
+                'out': None             
             }
+        self.special_exits = {}
         
     def __setitem__(self, key, value):
         if key not in self.routes:
-            raise ValueError('Exit direction %s not supported.' % key)
-        self.routes[key] = value
+            self.special_exits[key] = value
+        else:
+            self.routes[key] = value
     
     def __getitem__(self, key):
+        if key not in self.routes:
+            return self.special_exits.get(key)
         return self.routes.get(key)
     
     def to_string(self):

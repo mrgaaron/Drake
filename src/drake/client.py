@@ -11,6 +11,13 @@ channel = stackless.channel()
 
 OUTPUT_SCREEN_HEIGHT = 22
 
+def handle_quit():
+     curses.echo()
+     curses.nocbreak()
+     curses.endwin()
+     self.socket.close()
+     sys.exit(0)
+
 class UserInput(threading.Thread):
     def __init__(self, screen):
         self.screen = screen
@@ -20,6 +27,8 @@ class UserInput(threading.Thread):
         while True:
             try:
                 command = self.screen.input_textpad.edit()
+                if 'quit' in command:
+                    handle_quit()
                 self.screen.input_window.clear()
                 self.screen.input_window.refresh()
             except Exception, e:
@@ -31,6 +40,7 @@ class Screen(object):
     def __init__(self):
         self.screen = curses.initscr()
         curses.start_color()
+        curses.cbreak()
         self.output_window = curses.newwin(OUTPUT_SCREEN_HEIGHT, 80, 0, 0)
         for i in xrange(1, curses.COLORS):
             curses.init_pair(i, i, curses.COLOR_BLACK)

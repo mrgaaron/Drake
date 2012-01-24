@@ -58,7 +58,7 @@ class World(object):
         self.data_path = data_path
         self.zones = Zone('World')
         self.init_rooms()
-        self.initial_room = 'Test/Town/Town Square'
+        self.initial_room = 'Sephix/Outside/Market/Central Square'
     
     def create_zone(self, zone_path):
         if len(zone_path) == 1:

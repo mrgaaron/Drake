@@ -1,0 +1,14 @@
+Title:
+Sephix - Northwest Market Square
+==
+Description:
+The sole shop in this corner of the market is the blacksmith.  The echoing of
+hammers against iron can be heard emanating from the door.  Smoke billows from
+the building's chimney.  A few heavily armed customers continuously enter and
+exit through the door, no doubt readying themselves for an expedition in the
+wild country outside Sephix.
+==
+Exits:
+blacksmith-Sephix/Inside/Blacksmith/Entry
+Southeast-Sephix/Outside/Market/Central Square
+==

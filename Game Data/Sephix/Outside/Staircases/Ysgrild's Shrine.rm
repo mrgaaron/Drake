@@ -1,0 +1,17 @@
+Title:
+Sephix - Ysgrild's Shrine
+==
+Description:
+A small landing has been carved in front of a wooden doorway that leads into
+a small shrine to Ysgrild, the Lord of the Mountains.  Above the doorway, a
+small relief of his likeness has been carved, and a monk clad in brown robes
+occasionally emerges from the shrine to quickly polish the relief before 
+slipping back inside the doorway.  A small pile of silverleaf flowers has been
+left outside the door.
+==
+Exits:
+Up-Sephix/Outside/Staircases/Rasac's Climb
+Down-Sephix/Outside/Lower District/Base of Rasac's Climb
+In-Sephix/Inside/Temples/Ysgrild/Mountain Shrine
+shrine-Sephix/Inside/Temples/Ysgrild/Mountain Shrine
+==

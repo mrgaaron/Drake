@@ -1,4 +1,5 @@
 haskell/dist/*
+databases/
 *.exe
 *.hi
 *.o
