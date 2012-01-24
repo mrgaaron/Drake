@@ -1,5 +1,6 @@
 haskell/dist/*
 databases/
+Game Data/
 *.exe
 *.hi
 *.o
