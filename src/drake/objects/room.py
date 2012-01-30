@@ -37,9 +37,10 @@ class Exits(object):
         return ', '.join(valid_exits)
 
 class Room(object):
-    def __init__(self, world, room_id, room_string):
+    def __init__(self, world, room_id, room_path, room_string):
         self.id = room_id
         self.room_string = room_string
+        self.room_path = room_path
         self.world = world
         self.exits = Exits()
         self.actors = set()

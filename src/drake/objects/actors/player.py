@@ -6,6 +6,7 @@ sys.path.append('C:\\Drake\\src')
 from drake.command.registry import CommandRegistry
 import actor
 from drake.mobiles.humans.basic import Human
+from drake.database.player import player_db
 
 class Player(actor.Actor):
     def __init__(self, connection, room, dead_channel):
@@ -13,7 +14,6 @@ class Player(actor.Actor):
         self.dead_channel = dead_channel
         self.connection = connection
         self.alive = True
-        stackless.tasklet(self.handle_login)()
         self.last_contact = time.time()
         self.warned = False
         self.cleaned = False
@@ -25,20 +25,12 @@ class Player(actor.Actor):
     
     def close_connection(self):
         self.alive = False
+        print 'Closing connection for %s' % (self.id)
+        self.save()
         self.dead_channel.send('go')
         
-    def handle_login(self):
-        self.send_message(None, 'What is your name?')
-        self.id = self.connection.recv(1024)
-        self.short_description = self.id
-        self.action_description = self.id
-        self.long_description = '%s is a game player.' % self.id
-        self.room.add_actor(self)
-        stackless.tasklet(self.read_command)()
-        self.send_message(None, self.room.to_string(self))
-        self.room.broadcast('%s just entered.' % self.id,
-                                    self)
-        stackless.schedule()
+    def save(self):
+        player_db.save_player(self)
     
     def send_message(self, from_actor, message):
         try:
