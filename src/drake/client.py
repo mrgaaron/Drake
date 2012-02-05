@@ -11,16 +11,17 @@ channel = stackless.channel()
 
 OUTPUT_SCREEN_HEIGHT = 22
 
-def handle_quit():
+def handle_quit(sock):
      curses.echo()
      curses.nocbreak()
      curses.endwin()
-     self.socket.close()
+     sock.close()
      sys.exit(0)
 
 class UserInput(threading.Thread):
-    def __init__(self, screen):
+    def __init__(self, screen, sock):
         self.screen = screen
+        self.socket = sock
         threading.Thread.__init__(self)
         
     def run(self):
@@ -28,7 +29,7 @@ class UserInput(threading.Thread):
             try:
                 command = self.screen.input_textpad.edit()
                 if 'quit' in command:
-                    handle_quit()
+                    handle_quit(self.socket)
                 self.screen.input_window.clear()
                 self.screen.input_window.refresh()
             except Exception, e:
@@ -73,9 +74,6 @@ class Client(object):
         self.host = host
         self.port = port
         self.screen = Screen()
-        self.user_input = UserInput(self.screen)
-        self.user_input.setDaemon = True
-        
         stackless.tasklet(self.run)()
     
     def handle_exception(self, exception):
@@ -93,6 +91,10 @@ class Client(object):
         
         stackless.tasklet(self.send_command)()
         stackless.tasklet(self.receive_messages)()
+        
+        self.user_input = UserInput(self.screen, self.socket)
+        self.user_input.setDaemon = True
+        
         self.user_input.start()
     
     def send_command(self):

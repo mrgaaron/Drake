@@ -52,7 +52,7 @@ class GoCommand(Command):
             actor.send_message(actor, 'Go where?')
             return
         
-        direction = rest[1]
+        direction = ' '.join(rest[1:])
 
         destination = current_room.exits[direction]
         

@@ -1,4 +1,4 @@
-import os, re
+import os, re, time
 import room
 
 import sys
@@ -73,6 +73,8 @@ class World(object):
         
     def init_rooms(self):
         rooms = []
+        total = 0
+        t0 = time.time()
         for dirpath, dirnames, filenames in os.walk(self.data_path):
             for dirname in dirnames:
                 zone_path = extract_zone_path(self.data_path, dirpath, dirname)
@@ -88,13 +90,16 @@ class World(object):
                 rm = room.Room(self, room_id, path, room_string)
                 self.insert_room(this_zone, rm)
                 rooms.append(rm)
-                fh.close()                
+                fh.close()  
+                total += 1              
                 
         for rm in rooms:
             rm.parse()
-            
+         
+        t1 = time.time() 
+        print 'Initialized world consisting of %d rooms in %d seconds' % (
+            total, t1-t0)
         #for testing
-        
         rm = self.query_room('Test/Arena/Foyer')
         mob = warrior.OrcWarrior('orc-64', rm)
             
