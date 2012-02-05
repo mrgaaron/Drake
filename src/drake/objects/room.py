@@ -1,39 +1,76 @@
 import stackless
+import re
 
 class Exits(object):
     def __init__(self):
         self.routes = {
-                'north': None,
-                'south': None,
-                'east': None,
-                'west': None,
-                'northwest': None,
-                'southeast': None,
-                'southwest': None,
-                'northeast': None,
-                'up': None,
-                'down': None,
-                'in': None,
-                'out': None             
+                'north': [None, 'closed'],
+                'south': [None, 'closed'],
+                'east': [None, 'closed'],
+                'west': [None, 'closed'],
+                'northwest': [None, 'closed'],
+                'southeast': [None, 'closed'],
+                'southwest': [None, 'closed'],
+                'northeast': [None, 'closed'],
+                'up': [None, 'closed'],
+                'down': [None, 'closed'],
+                'in': [None, 'closed'],
+                'out': [None, 'closed'],  
             }
         self.special_exits = {}
         
-    def __setitem__(self, key, value):
-        if key not in self.routes:
-            self.special_exits[key] = value
-        else:
-            self.routes[key] = value
-    
     def __getitem__(self, key):
         if key not in self.routes:
-            return self.special_exits.get(key)
-        return self.routes.get(key)
+            return self.special_exits.get(key, [None])[0]
+        return self.routes.get(key, [None])[0]
+    
+    def _set_exit_status(self, key, status):
+        if key not in self.routes:
+            ex = self.special_exits.get(key)
+        else:
+            ex = self.routes.get(key)
+        
+        if ex:
+            ex[1] = status
+            self.special_exits[key] = ex
+    
+    def close(self, key):
+        self._set_exit_status(key, 'close')
+        
+    def has_attr(self, key, attr):
+        if key not in self.routes:
+            ex = self.special_exits.get(key)
+        else:
+            ex = self.routes.get(key)
+        
+        return attr in ex        
+
+    def is_open(self, key):
+        if key not in self.routes:
+            ex = self.special_exits.get(key)
+        else:
+            ex = self.routes.get(key)
+        if ex:
+            return ex[1] == 'open'
+        return False
+    
+    def open(self, key):
+        self._set_exit_status(key, 'open')
+    
+    def set_exit(self, direction, destination, *attrs):
+        l = [destination]
+        l.extend(attrs)
+        if direction in self.routes:
+            self.routes[direction] = l
+        else:
+            self.special_exits[direction] = l
     
     def to_string(self):
         valid_exits = []
         for k in self.routes:
-            if self.routes[k]:
+            if self.routes[k][0]:
                 valid_exits.append(k)
+        valid_exits.sort()
         return ', '.join(valid_exits)
 
 class Room(object):
@@ -44,6 +81,8 @@ class Room(object):
         self.world = world
         self.exits = Exits()
         self.actors = set()
+        #features are items in the room that can be looked at/interacted with
+        self.features = {}
     
     def __hash__(self):
         return hash(self.id)
@@ -52,7 +91,31 @@ class Room(object):
         if not isinstance(other, Room):
             raise ValueError('Room objects can only be compared to each other')
         return self.id == other.id
-        
+    
+    def _parse_exits(self, value):
+        exits = value.split('\n')
+        for e in exits:
+            if not e:
+                continue
+            pieces = e.split('-')
+            direction = pieces[0].lower()
+            attrs = pieces[1].split('%')
+            destination = self.world.query_room(attrs[0])
+            
+            if len(attrs) > 1:
+                attrs = attrs[1].split(',')
+                self.exits.set_exit(direction, destination, *attrs)
+            else:
+                self.exits.set_exit(direction, destination, 'open')
+    
+    def _parse_features(self, value):
+        features = value.split('%')
+        for f in features:
+            if not f:
+                continue
+            pieces = f.split('-')
+            self.features[pieces[0]] = pieces[1]
+
     def add_actor(self, actor):
         self.actors.add(actor)
         
@@ -75,26 +138,23 @@ class Room(object):
         t.set_atomic(atomic)
     
     def parse(self):
-        parts = self.room_string.split('==\n')
+        parts = re.split(r'==|==\n', self.room_string)
         for part in parts:
             if not part:
                 continue
             name, value = part.split(':\n')
-            if name != 'Exits':
-                setattr(self, name.lower(), value.strip('\n'))
+            canon_name = name.lower().strip('\n')
+            if canon_name == 'exits':
+                self._parse_exits(value)
+            elif canon_name == 'features':
+                self._parse_features(value)
             else:
-                exits = value.split('\n')
-                for e in exits:
-                    if not e:
-                        continue
-                    pieces = e.split('-')
-                    direction = pieces[0].lower()
-                    try:
-                        destination = self.world.query_room(pieces[1])
-                        self.exits[direction] = destination
-                    except:
-                        pass
-    
+                setattr(self, canon_name, value.strip('\n'))
+        del self.room_string
+                
+    def query_feature(self, feature):
+        return self.features.get(feature)
+                    
     def query_target(self, target):
         for actor in self.actors:
             if actor.id == target or target in actor.short_description:

@@ -100,7 +100,7 @@ class World(object):
         print 'Initialized world consisting of %d rooms in %d seconds' % (
             total, t1-t0)
         #for testing
-        rm = self.query_room('Test/Arena/Foyer')
+        rm = self.query_room('Sephix/Outside/Market/Vitenir\'s Arch')
         mob = warrior.OrcWarrior('orc-64', rm)
             
     def insert_room(self, zone_path, room):

@@ -14,12 +14,14 @@ _CONVERSIONS = {
     'sw': 'southwest',
     'nw': 'northwest',
     'up': 'up',
-    'in': 'in'
+    'in': 'in',
+    'u': 'up',
+    'd': 'down'
     }
 
 class MoveCommand(Command):
     __commands__ = ['n', 'north', 'east', 'e', 'w', 'west', 's', 'south', 'up',
-                    'down', 'nw', 'ne', 'se', 'sw', 'in', 'out']
+                    'down', 'nw', 'ne', 'se', 'sw', 'in', 'out', 'u', 'd']
     
     def __call__(self, rest, actor):
         current_room = actor.room
@@ -29,6 +31,10 @@ class MoveCommand(Command):
             direction = _CONVERSIONS[direction]        
         
         destination = current_room.exits[direction]
+        
+        if not current_room.exits.is_open(direction):
+            actor.send_message(actor, 'You bonk your nose!')
+            return
         
         if destination:
             current_room.remove_actor(actor)
@@ -55,6 +61,10 @@ class GoCommand(Command):
         direction = ' '.join(rest[1:])
 
         destination = current_room.exits[direction]
+        
+        if not current_room.exits.is_open(direction):
+            actor.send_message(actor, 'You bonk your nose!')
+            return
         
         if destination:
             current_room.remove_actor(actor)

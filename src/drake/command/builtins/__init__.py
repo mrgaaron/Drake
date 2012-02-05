@@ -5,3 +5,4 @@ from emote import EmoteCommand
 from kill import KillCommand
 from logout import LogoutCommand
 from health import HealthCommand
+from close import OpenCommand, CloseCommand
