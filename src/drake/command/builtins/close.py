@@ -3,6 +3,7 @@ sys.path.append('C:\\Drake\\src')
 
 from drake.command import Command
 
+#in general you don't want the player opening and closing directions
 FORBIDDEN = set(['n', 'north', 'south', 's', 'e', 'east', 'west', 'w', 'nw',
                  'northwest', 'southwest', 'sw', 'southeast', 'se', 'u', 'up',
                  'd', 'down'])
