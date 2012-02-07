@@ -9,6 +9,4 @@ Cabal-Version:          >= 1.2
 library
     Build-Depends:      stm,parsec,base,containers,bytestring
     Exposed-modules:
-        Game.GameObjects.NPC, Game.GameObjects.Player, 
-        Game.GameObjects.PlayerMap, Game.GameObjects.Room, 
-        Game.Parsers.Room
+        Weather.Parser.Zone

@@ -1,9 +1,6 @@
 import os, re, time
 import room
 
-import sys
-sys.path.append('C:\\Drake\src')
-
 from drake.mobiles.orcs import warrior
 
 def split_path(path):

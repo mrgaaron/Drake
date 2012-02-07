@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append('C:\Drake\src')
-
 from drake.subsystems.health.limb import Limb
 from drake.subsystems.health.body import Body
 

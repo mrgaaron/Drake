@@ -1,8 +1,6 @@
 import sys, time, threading
 import stackless
 
-sys.path.append('C:\\Drake\\src')
-
 import ssocket
 #ssocket.install()
 import socket

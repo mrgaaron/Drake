@@ -1,6 +1,3 @@
-import sys
-sys.path.append('C:\\Drake\\src')
-
 from drake.command import Command
 
 class LogoutCommand(Command):
