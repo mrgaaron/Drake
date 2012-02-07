@@ -6,3 +6,6 @@ Game Data/
 *.o
 *.pyc
 *.wpr
+*.swp
+*.hs~
+*.py~
