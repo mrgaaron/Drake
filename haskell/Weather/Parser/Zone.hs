@@ -1,6 +1,11 @@
-module Weather.Parsers.Zone where
+module Weather.Parsers.Zone
+  (
+    parseSettingsFile
+  )
+ where
 
 import Text.ParserCombinators.Parsec
+import qualified Data.Map as Map
 
 settingsFile = endBy line eol
 line = sepBy cell $ char ':'
@@ -10,13 +15,15 @@ eol =    try (string "\n\r")
      <|> string "\n"
      <|> string "\r"
 
-finalize :: [[String]] -> [[(String, Float)]]
-finalize input = map convertToFloat $ filter notComment input where
+flatten = foldl (++) []
+
+finalize :: [[String]] -> [(String, Float)]
+finalize input = flatten $  map convertToFloat $ filter notComment input where
 		notComment a = (length a > 1)
 		convertToFloat a = [((a !! 0), read (a !! 1) :: Float)]
 
 parseSettingsFile path = do
 	result <- parseFromFile settingsFile path
 	case result of
-		Left x -> return []
-		Right x -> return $ finalize x
+		Left x -> return Map.empty
+		Right x -> return $ Map.fromList $ finalize x

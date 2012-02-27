@@ -1,7 +1,7 @@
 Version:                0.1
-name:                   drake
-Description:            Files for developing MUD project
-License:                BSD3
+name:                   weather
+Description:            Weather Simulator
+License:                AGPL
 Author:                 Aaron Brenzel
 Build-Type:             Simple
 Cabal-Version:          >= 1.2
@@ -9,4 +9,5 @@ Cabal-Version:          >= 1.2
 library
     Build-Depends:      stm,parsec,base,containers,bytestring
     Exposed-modules:
-        Weather.Parser.Zone
+        Weather.Parser.Zone, Weather.Atmosphere.Temperature,
+		Weather.Atmosphere.Pressure
